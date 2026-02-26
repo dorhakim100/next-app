@@ -1,32 +1,29 @@
 import React from 'react'
+import UsersTable from '../components/UsersTable/UsersTable'
+import { User } from '../types/User/User'
+import { sort } from 'fast-sort'
 
-interface User {
-  id: number
-  name: string
-  email: string
+interface Props {
+  searchParams: Promise<{
+    sortOrder: string
+  }>
 }
 
-const UsersPage = async () => {
+const UsersPage = async ({ searchParams }: Props) => {
+  const { sortOrder } = await searchParams
   const res = await fetch('https://jsonplaceholder.typicode.com/users')
+
   const users: User[] = await res.json()
+
+  let sortedUsers = users
+  if (sortOrder === 'name') {
+    sortedUsers = sort(users).asc((user) => user.name)
+  } else if (sortOrder === 'email') {
+    sortedUsers = sort(users).asc((user) => user.email)
+  }
   return (
     <div>
-      <table className='table table-zebra table-pin-cols'>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user: User) => (
-            <tr key={user.id}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <UsersTable users={sortedUsers} />
     </div>
   )
 }
