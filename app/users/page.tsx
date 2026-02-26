@@ -2,6 +2,7 @@ import React from 'react'
 import UsersTable from '../components/UsersTable/UsersTable'
 import { User } from '../types/User/User'
 import { sort } from 'fast-sort'
+import Link from 'next/link'
 
 interface Props {
   searchParams: Promise<{
@@ -23,6 +24,12 @@ const UsersPage = async ({ searchParams }: Props) => {
   }
   return (
     <div>
+      <Link
+        href='/users/new'
+        className='btn btn-primary mb-5'
+      >
+        New User
+      </Link>
       <UsersTable users={sortedUsers} />
     </div>
   )
