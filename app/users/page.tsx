@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import UsersTable from '../components/UsersTable/UsersTable'
-import { User } from '../types/User/User'
-import { sort } from 'fast-sort'
+
 import Link from 'next/link'
 
 interface Props {
@@ -12,16 +11,7 @@ interface Props {
 
 const UsersPage = async ({ searchParams }: Props) => {
   const { sortOrder } = await searchParams
-  const res = await fetch('https://jsonplaceholder.typicode.com/users')
 
-  const users: User[] = await res.json()
-
-  let sortedUsers = users
-  if (sortOrder === 'name') {
-    sortedUsers = sort(users).asc((user) => user.name)
-  } else if (sortOrder === 'email') {
-    sortedUsers = sort(users).asc((user) => user.email)
-  }
   return (
     <div>
       <Link
@@ -30,7 +20,9 @@ const UsersPage = async ({ searchParams }: Props) => {
       >
         New User
       </Link>
-      <UsersTable users={sortedUsers} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <UsersTable sortOrder={sortOrder} />
+      </Suspense>
     </div>
   )
 }

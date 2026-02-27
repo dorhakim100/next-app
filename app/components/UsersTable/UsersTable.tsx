@@ -1,9 +1,25 @@
 import React from 'react'
 import { User } from '@/app/types/User/User'
 import Link from 'next/link'
-import useSearchParams from 'next/navigation'
 
-const UsersTable = ({ users }: { users: User[] }) => {
+import { sort } from 'fast-sort'
+
+interface Props {
+  sortOrder: string
+}
+
+const UsersTable = async ({ sortOrder = 'name' }: Props) => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/users')
+
+  const users: User[] = await res.json()
+
+  let sortedUsers = users
+  if (sortOrder === 'name') {
+    sortedUsers = sort(users).asc((user) => user.name)
+  } else if (sortOrder === 'email') {
+    sortedUsers = sort(users).asc((user) => user.email)
+  }
+
   return (
     <table className='table table-zebra table-pin-cols'>
       <thead>
@@ -17,7 +33,7 @@ const UsersTable = ({ users }: { users: User[] }) => {
         </tr>
       </thead>
       <tbody>
-        {users.map((user: User) => (
+        {sortedUsers.map((user: User) => (
           <tr key={user.id}>
             <td>{user.name}</td>
             <td>{user.email}</td>
