@@ -44,3 +44,21 @@ export async function PUT(request: NextRequest, { params }: Props) {
     )
   }
 }
+
+export async function DELETE(request: NextRequest, { params }: Props) {
+  try {
+    const { id } = await params
+    if (typeof +id !== 'number' || +id > 10) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+    return NextResponse.json(
+      { message: 'User deleted successfully' },
+      { status: 200 }
+    )
+  } catch (err) {
+    return NextResponse.json(
+      { error: 'Failed to delete user' },
+      { status: 500 }
+    )
+  }
+}
