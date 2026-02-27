@@ -22,3 +22,25 @@ export async function GET(request: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'User not found' }, { status: 404 })
   }
 }
+
+export async function PUT(request: NextRequest, { params }: Props) {
+  try {
+    const { id } = await params
+    const body = await request.json()
+    if (!body.name) {
+      return NextResponse.json({ error: 'Name is required' }, { status: 400 })
+    }
+    if (typeof +id !== 'number' || +id > 10) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+    return NextResponse.json(
+      { message: 'User updated successfully' },
+      { status: 200 }
+    )
+  } catch (err) {
+    return NextResponse.json(
+      { error: 'Failed to update user' },
+      { status: 500 }
+    )
+  }
+}

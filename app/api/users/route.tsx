@@ -14,7 +14,10 @@ export async function POST(request: NextRequest) {
     if (!body.name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 })
     }
-    return NextResponse.json(body)
+    return NextResponse.json(
+      { message: 'User created successfully' },
+      { status: 201 }
+    )
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to create user' },
