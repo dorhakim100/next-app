@@ -1,9 +1,10 @@
 import React from 'react'
 import { User } from '@/app/types/User/User'
+import { notFound } from 'next/navigation'
 
 interface Props {
   params: Promise<{
-    id: number
+    id: number | string
   }>
 }
 
@@ -12,8 +13,8 @@ const UserDetailsPage = async ({ params }: Props) => {
   const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
   const user: User = await res.json()
 
-  if (!user) {
-    return <div>User not found</div>
+  if (!user || typeof id !== 'number' || id > 10) {
+    notFound()
   }
   return (
     <div>

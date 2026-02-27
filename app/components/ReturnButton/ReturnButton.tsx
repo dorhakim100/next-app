@@ -2,11 +2,19 @@
 
 import { useRouter } from 'next/navigation'
 
-const ReturnButton = () => {
+interface Props {
+  backTo?: string
+}
+
+const ReturnButton = ({ backTo }: Props) => {
   const router = useRouter()
 
   const handleReturn = () => {
-    router.back()
+    if (backTo) {
+      router.push(backTo)
+    } else {
+      router.back()
+    }
   }
 
   return (
