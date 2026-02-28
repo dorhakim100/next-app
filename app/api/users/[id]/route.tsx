@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import schema from './schema'
-
+import schema from '../schema'
+import { prisma } from '@/prisma/client'
 interface Props {
   params: Promise<{
     id: string
@@ -10,17 +10,22 @@ interface Props {
 export async function GET(request: NextRequest, { params }: Props) {
   try {
     const { id } = await params
+    if (typeof +id !== 'number') {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+    }
+    const user = await prisma.user.findUnique({
+      where: {
+        id: +id,
+      },
+    })
 
-    if (typeof +id !== 'number' || +id > 10) {
+    if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
-    const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
-    const user = await res.json()
-
     return NextResponse.json(user)
   } catch (err) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    return NextResponse.json({ error: 'Failed to get user' }, { status: 500 })
   }
 }
 
@@ -35,10 +40,16 @@ export async function PUT(request: NextRequest, { params }: Props) {
         { status: 400 }
       )
     }
-    return NextResponse.json(
-      { message: 'User updated successfully' },
-      { status: 200 }
-    )
+    const user = await prisma.user.update({
+      where: {
+        id: +id,
+      },
+      data: {
+        name: body.name,
+        email: body.email,
+      },
+    })
+    return NextResponse.json(user)
   } catch (err) {
     return NextResponse.json(
       { error: 'Failed to update user' },
@@ -50,7 +61,15 @@ export async function PUT(request: NextRequest, { params }: Props) {
 export async function DELETE(request: NextRequest, { params }: Props) {
   try {
     const { id } = await params
-    if (typeof +id !== 'number' || +id > 10) {
+    if (typeof +id !== 'number') {
+      return NextResponse.json({ error: 'Invalid ID' }, { status: 400 })
+    }
+    const deletedUser = await prisma.user.delete({
+      where: {
+        id: +id,
+      },
+    })
+    if (!deletedUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
     return NextResponse.json(
