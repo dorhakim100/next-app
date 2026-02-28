@@ -22,6 +22,12 @@ const NavBar = () => {
       >
         Users
       </Link>
+      <Link
+        href='/upload'
+        className='btn btn-ghost'
+      >
+        Upload
+      </Link>
     </nav>
   )
 }
