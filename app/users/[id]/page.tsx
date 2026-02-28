@@ -10,10 +10,12 @@ interface Props {
 
 const UserDetailsPage = async ({ params }: Props) => {
   const { id } = await params
-  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+  // const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
+  const res = await fetch(`http://localhost:3000/api/users/${id}`)
+
   const user: User = await res.json()
 
-  if (!user || typeof id !== 'number' || id > 10) {
+  if (!user || typeof +id !== 'number' || +id > 10) {
     notFound()
   }
   return (
