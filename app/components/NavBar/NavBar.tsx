@@ -28,6 +28,12 @@ const NavBar = () => {
       >
         Upload
       </Link>
+      <Link
+        href='/api/auth/signin'
+        className='btn btn-ghost'
+      >
+        Sign In
+      </Link>
     </nav>
   )
 }
